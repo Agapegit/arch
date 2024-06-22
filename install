@@ -85,8 +85,8 @@ cp conf /mnt/archinstall/
 #cp 5-timeshift.sh /mnt/archinstall/
 #cp 6-preload.sh /mnt/archinstall/
 #cp snapshot.sh /mnt/archinstall/
-chmod +x /mnt/archinstall/conf
+#chmod +x /mnt/archinstall/conf
 # ------------------------------------------------------
 # Chroot to installed sytem
 # ------------------------------------------------------
-arch-chroot /mnt ./archinstall/oonf
+arch-chroot /mnt ./archinstall/conf
