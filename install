@@ -90,6 +90,4 @@ chmod +x /mnt/archinstall/conf
 # ------------------------------------------------------
 # Chroot to installed sytem
 # ------------------------------------------------------
-arch-chroot /mnt 
-chmod +x /archinstall/conf
-./archinstall/conf
+arch-chroot /mnt chmod +x /archinstall/conf ./archinstall/conf
