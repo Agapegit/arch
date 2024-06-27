@@ -5,7 +5,10 @@
 # ------------------------------------------------------
 sed -i s/'#Color'/'Color'/g /etc/pacman.conf
 sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
-setfont cyr-sun16
+echo "Start reflector..."
+reflector -c "Germany," -p https -a 3 --sort rate --save /etc/pacman.d/mirrorlist
+pacman -Syy
+
 
 # ------------------------------------------------------
 # Enter partition names
