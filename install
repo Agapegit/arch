@@ -5,10 +5,10 @@
 # ------------------------------------------------------
 sed -i s/'#Color'/'Color'/g /etc/pacman.conf
 sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
-echo "Start reflector..."
-read -p "Enter your country " country
-reflector -c "$country," -p https -a 3 --sort rate --save /etc/pacman.d/mirrorlist
-pacman -Syy
+#echo "Start reflector..."
+#read -p "Enter your country " country
+#reflector -c "$country," -p https -a 3 --sort rate --save /etc/pacman.d/mirrorlist
+#pacman -Syy
 
 
 # ------------------------------------------------------
