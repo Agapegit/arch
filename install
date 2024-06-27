@@ -1,28 +1,11 @@
 #!/bin/bash
 
 # ------------------------------------------------------
-# Setup locale, font, internet start
+# Pacman config
 # ------------------------------------------------------
-
-systemctl start systemd-resolved
-sed -i s/'#en_US.UTF-8'/'en_US.UTF-8'/g /etc/locale.gen
-sed -i s/'#ru_RU.UTF-8'/'ru_RU.UTF-8'/g /etc/locale.gen
-chmod 777 /etc/locale.conf
-chmod 777 /etc/vconsole.conf
-echo 'LANG=ru_RU.UTF-8' > /etc/locale.conf
-echo 'KEYMAP=ru' > /etc/vconsole.conf
-echo 'FONT=cyr-sun16' >> /etc/vconsole.conf
-
 sed -i s/'#Color'/'Color'/g /etc/pacman.conf
-sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 10'/g /etc/pacman.conf
-
-chmod 644 /etc/locale.conf
-chmod 644 /etc/vconsole.conf
+sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 setfont cyr-sun16
-locale-gen >/dev/null 2>&1; RETVAL=$?
-systemctl restart dhcpcd
-dhcpcd >/dev/null 2>&1; RETVAL=$?
-
 
 # ------------------------------------------------------
 # Enter partition names
