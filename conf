@@ -3,10 +3,11 @@
 sed -i s/'#Color'/'Color'/g /etc/pacman.conf
 sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 
-keyboardlayout="cyr-sun16"
+read -p "Enter username: " username
+read -p "Enter pc name: " hostname
 zoneinfo="Europe/Moscow"
-hostname="agapepc"
-username="agape"
+#hostname="agapepc"
+#username="agape"
 
 # ------------------------------------------------------
 # Set System Time
@@ -28,10 +29,10 @@ pacman -Syy
 # ------------------------------------------------------
 # Install Packages
 # ------------------------------------------------------
-pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober acpi acpi_call acpid plasma dolphin konsole kate pacman-contrib reflector networkmanager network-manager-applet bluez sof-firmware alsa-utils pipewire pipewire-alsa pipewire-pulse pipewire-jack firewalld flatpak firefox git
+pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober acpi acpi_call acpid plasma dolphin konsole kate pacman-contrib reflector networkmanager network-manager-applet bluez sof-firmware alsa-utils pipewire pipewire-alsa pipewire-pulse pipewire-jack firewalld flatpak firefox git nvidia
 
 # ------------------------------------------------------
-# set lang utf-8 US,RU
+# set lang utf-8 US, RU
 # ------------------------------------------------------
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 echo "ru_RU.UTF-8 UTF-8" >> /etc/locale.gen
@@ -42,7 +43,7 @@ echo "LANG=ru_RU.UTF-8" >> /etc/locale.conf
 # Set Keyboard
 # ------------------------------------------------------
 echo "FONT=cyr-sun16" >> /etc/vconsole.conf
-echo "KEYMAP=$keyboardlayout" >> /etc/vconsole.conf
+echo "KEYMAP=cyr-sun16" >> /etc/vconsole.conf
 
 # ------------------------------------------------------
 # Set hostname and localhost
@@ -89,5 +90,3 @@ grub-mkconfig -o /boot/grub/grub.cfg
 sed -i 's/BINARIES=()/BINARIES=(btrfs setfont)/g' /etc/mkinitcpio.conf
 sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/g' /etc/mkinitcpio.conf
 mkinitcpio -p linux
-
-sed -i s/'# %wheel ALL=(ALL:ALL) ALL'/'%wheel ALL=(ALL:ALL) ALL'/g /etc/sudoers"
