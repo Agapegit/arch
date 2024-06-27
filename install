@@ -49,7 +49,7 @@ mount /dev/$sda1 /mnt/boot/efi
 # ------------------------------------------------------
 # Install base packages
 # ------------------------------------------------------
-pacstrap -K /mnt base base-devel git linux linux-firmware linux-headers intel-ucode grub efibootmgr
+pacstrap -K /mnt base base-devel linux linux-firmware linux-headers
 
 # ------------------------------------------------------
 # Generate fstab
@@ -73,4 +73,5 @@ chmod +x /mnt/archinstall/conf
 # ------------------------------------------------------
 # Chroot to installed sytem
 # ------------------------------------------------------
-arch-chroot /mnt chmod +x /archinstall/conf ./archinstall/conf
+chmod +x /archinstall/conf
+arch-chroot /mnt ./archinstall/conf
