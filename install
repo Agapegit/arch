@@ -10,6 +10,11 @@ sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 #reflector -c "$country," -p https -a 3 --sort rate --save /etc/pacman.d/mirrorlist
 #pacman -Syy
 
+#FIX autoselection disk
+read -p "Enter disk name" diskname
+cfdisk --zero $diskname
+
+#Fix read partition!
 
 # ------------------------------------------------------
 # Enter partition names
