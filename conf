@@ -29,7 +29,7 @@ pacman -Syy
 # ------------------------------------------------------
 # Install Packages
 # ------------------------------------------------------
-pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober acpi acpi_call acpid plasma dolphin konsole kate pacman-contrib reflector networkmanager network-manager-applet bluez sof-firmware alsa-utils pipewire pipewire-alsa pipewire-pulse pipewire-jack firewalld flatpak firefox git nvidia
+pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober acpi acpi_call acpid plasma-desktop dolphin konsole kate pacman-contrib reflector networkmanager network-manager-applet bluez sof-firmware alsa-utils pipewire pipewire-alsa pipewire-pulse pipewire-jack firewalld flatpak firefox git steam nvidia
 
 # ------------------------------------------------------
 # set lang utf-8 US, RU
