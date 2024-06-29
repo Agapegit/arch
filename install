@@ -13,7 +13,7 @@ sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 lsblk
 read -p "Enter disk name: " diskname
 
-cfdisk --zero $diskname
+cfdisk --zero /dev/$diskname
 
 #Fix read partition!
 
