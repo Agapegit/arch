@@ -70,9 +70,9 @@ passwd $username
 # ------------------------------------------------------
 # Enable Services
 # ------------------------------------------------------
-systemctl enable NetworkManager
-systemctl enable bluetooth
-systemctl enable reflector.timer
+#systemctl enable NetworkManager
+#systemctl enable bluetooth
+#systemctl enable reflector.timer
 systemctl enable fstrim.timer
 systemctl enable firewalld
 systemctl enable acpid
@@ -90,3 +90,4 @@ grub-mkconfig -o /boot/grub/grub.cfg
 sed -i 's/BINARIES=()/BINARIES=(btrfs setfont)/g' /etc/mkinitcpio.conf
 sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/g' /etc/mkinitcpio.conf
 mkinitcpio -p linux
+exit
