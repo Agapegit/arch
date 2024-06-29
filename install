@@ -20,8 +20,8 @@ cfdisk --zero $diskname
 # Enter partition names
 # ------------------------------------------------------
 lsblk
-read -p "Enter the name of the EFI partition (eg. sda1): " sda1
-read -p "Enter the name of the ROOT partition (eg. sda2): " sda2
+read -p "Enter the name of the EFI partition (eg. sda1 or nvme0n1p1): " diskpartboot
+read -p "Enter the name of the ROOT partition (eg. sda2 or or nvme0n1p2): " diskpartsys
 # read -p "Enter the name of the Home partition (eg. sda3): " sda3
 
 # ------------------------------------------------------
@@ -32,14 +32,14 @@ timedatectl set-ntp true
 # ------------------------------------------------------
 # Format partitions
 # ------------------------------------------------------
-mkfs.fat -F 32 /dev/$sda1;
-mkfs.btrfs -f /dev/$sda2
+mkfs.fat -F 32 /dev/$diskpartboot
+mkfs.btrfs -f /dev/$diskpartsys
 # mkfs.btrfs -f /dev/$sda3
 
 # ------------------------------------------------------
 # Mount points for btrfs
 # ------------------------------------------------------
-mount /dev/$sda2 /mnt
+mount /dev/$diskpartsys /mnt
 # mount /dev/$sda3 /mnt/home
 btrfs su cr /mnt/@
 btrfs su cr /mnt/@cache
@@ -48,32 +48,33 @@ btrfs su cr /mnt/@snapshots
 btrfs su cr /mnt/@log
 umount -R /mnt
 
-mount -o compress=zstd:1,noatime,subvol=@ /dev/$sda2 /mnt
 mkdir -p /mnt/{boot/efi,home,.snapshots,var/{cache,log}}
-mount -o compress=zstd:1,noatime,subvol=@cache /dev/$sda2 /mnt/var/cache
-mount -o compress=zstd:1,noatime,subvol=@home /dev/$sda2 /mnt/home
-mount -o compress=zstd:1,noatime,subvol=@log /dev/$sda2 /mnt/var/log
-mount -o compress=zstd:1,noatime,subvol=@snapshots /dev/$sda2 /mnt/.snapshots
-mount /dev/$sda1 /mnt/boot/efi
+mount /dev/$diskpartboot /mnt/boot/efi
+mount -o compress=zstd:1,noatime,subvol=@ /dev/$diskpartsys /mnt
+mount -o compress=zstd:1,noatime,subvol=@cache /dev/$diskpartsys /mnt/var/cache
+mount -o compress=zstd:1,noatime,subvol=@home /dev/$diskpartsys /mnt/home
+mount -o compress=zstd:1,noatime,subvol=@log /dev/$diskpartsys /mnt/var/log
+mount -o compress=zstd:1,noatime,subvol=@snapshots /dev/$diskpartsys /mnt/.snapshots
 # ------------------------------------------------------
 # Install base packages
 # ------------------------------------------------------
 pacstrap -K /mnt base base-devel linux linux-firmware linux-headers
-
 # ------------------------------------------------------
 # Generate fstab
 # ------------------------------------------------------
 genfstab -U /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
-
 # ------------------------------------------------------
 # Install configuration scripts
 # ------------------------------------------------------
 mkdir /mnt/archinstall
 cp arch/conf /mnt/archinstall/
 chmod +x /mnt/archinstall/conf
+# ------------------------------------------------------
+# Add group wheel to sudo
+# ------------------------------------------------------
 sed -i s/'# %wheel ALL=(ALL:ALL) ALL'/'%wheel ALL=(ALL:ALL) ALL'/g /mnt/etc/sudoers
 # ------------------------------------------------------
-# Chroot to installed sytem
+# Chroot to installed system
 # ------------------------------------------------------
 arch-chroot /mnt ./archinstall/conf
