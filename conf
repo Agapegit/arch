@@ -29,7 +29,7 @@ pacman -Syy
 # ------------------------------------------------------
 # Install Packages
 # ------------------------------------------------------
-pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober acpi acpi_call acpid plasma dolphin konsole kate pacman-contrib reflector networkmanager network-manager-applet bluez sof-firmware alsa-utils pipewire pipewire-alsa pipewire-pulse pipewire-jack firewalld flatpak firefox git steam nvidia-dkms
+pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober plasma dolphin konsole kate pacman-contrib
 
 # ------------------------------------------------------
 # set lang utf-8 US, RU
@@ -72,8 +72,8 @@ passwd $username
 #systemctl enable bluetooth
 #systemctl enable reflector.timer
 systemctl enable fstrim.timer
-systemctl enable firewalld
-systemctl enable acpid
+№systemctl enable firewalld
+№systemctl enable acpid
 systemctl enable sddm.service
 
 # ------------------------------------------------------
