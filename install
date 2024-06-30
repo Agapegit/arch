@@ -56,6 +56,8 @@ mount -o compress=zstd:1,noatime,subvol=@cache /dev/$diskpartsys /mnt/var/cache
 mount -o compress=zstd:1,noatime,subvol=@home /dev/$diskparthome /mnt/home
 mount -o compress=zstd:1,noatime,subvol=@log /dev/$diskpartsys /mnt/var/log
 mount -o compress=zstd:1,noatime,subvol=@snapshots /dev/$diskpartsys /mnt/.snapshots
+
+sleep 10
 # ------------------------------------------------------
 # Install base packages
 # ------------------------------------------------------
