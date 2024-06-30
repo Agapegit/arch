@@ -10,20 +10,29 @@ zoneinfo="Europe/Moscow"
 #username="agape"
 
 # ------------------------------------------------------
+# Set Root Password
+# ------------------------------------------------------
+echo "Set root password"
+passwd root
+
+# ------------------------------------------------------
+# Add User
+# ------------------------------------------------------
+echo "Add user $username"
+useradd -m -G wheel $username
+passwd $username
+
+# ------------------------------------------------------
 # Set System Time
 # ------------------------------------------------------
 ln -sf /usr/share/zoneinfo/$zoneinfo /etc/localtime
 hwclock --systohc
 
 # ------------------------------------------------------
-# Update reflector
+# Update reflector and synchronize mirrors
 # ------------------------------------------------------
 echo "Start reflector..."
 reflector -c "Germany," -p https -a 3 --sort rate --save /etc/pacman.d/mirrorlist
-
-# ------------------------------------------------------
-# Synchronize mirrors
-# ------------------------------------------------------
 pacman -Syy
 
 # ------------------------------------------------------
@@ -52,18 +61,6 @@ echo "$hostname" >> /etc/hostname
 echo "127.0.0.1 localhost" >> /etc/hosts
 echo "::1       localhost" >> /etc/hosts
 echo "127.0.1.1 $hostname.localdomain $hostname" >> /etc/hosts
-# ------------------------------------------------------
-# Set Root Password
-# ------------------------------------------------------
-echo "Set root password"
-passwd root
-
-# ------------------------------------------------------
-# Add User
-# ------------------------------------------------------
-echo "Add user $username"
-useradd -m -G wheel $username
-passwd $username
 
 # ------------------------------------------------------
 # Enable Services
