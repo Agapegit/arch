@@ -69,8 +69,8 @@ echo "127.0.1.1 $hostname.localdomain $hostname" >> /etc/hosts
 #systemctl enable bluetooth
 #systemctl enable reflector.timer
 systemctl enable fstrim.timer
-№systemctl enable firewalld
-№systemctl enable acpid
+#systemctl enable firewalld
+#systemctl enable acpid
 systemctl enable sddm.service
 
 # ------------------------------------------------------
