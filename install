@@ -31,18 +31,29 @@ read -p "Enter the name of the HOME partition (eg. sda3 or nvme0n1p3): " diskhom
 timedatectl set-ntp true
 
 # ------------------------------------------------------
-# Format partitions
+# EXT 4
 # ------------------------------------------------------
 mkfs.fat -F 32 /dev/$diskpartboot
-#mkfs.btrfs -f /dev/$diskpartsys
-#mkfs.btrfs -f /dev/$diskhome
 mkfs.ext4 /dev/$diskpartsys
 mkfs.ext4 /dev/$diskhome
 
+mkdir -p /mnt/{boot/efi,home,.snapshots,var/{cache,log}}
+
+mount /dev/$diskpartboot /mnt/boot/efi
+mount /dev/$diskpartsys /mnt
+mount /dev/$diskhome /mnt
+
+
+# ------------------------------------------------------
+# Format partitions
+# ------------------------------------------------------
+#mkfs.fat -F 32 /dev/$diskpartboot
+#mkfs.btrfs -f /dev/$diskpartsys
+#mkfs.btrfs -f /dev/$diskhome
 # ------------------------------------------------------
 # Mount points for btrfs
 # ------------------------------------------------------
-umount -R /mnt
+#umount -R /mnt
 #mount /dev/$diskpartsys /mnt
 #mount /dev/$diskhome /mnt/home
 #btrfs su cr /mnt/@
@@ -51,11 +62,7 @@ umount -R /mnt
 #btrfs su cr /mnt/@snapshots
 #btrfs su cr /mnt/@log
 
-mkdir -p /mnt/{boot/efi,home,.snapshots,var/{cache,log}}
-
-mount /dev/$diskpartboot
-mount /dev/$diskpartsys
-mount /dev/$diskhome
+#mkdir -p /mnt/{boot/efi,home,.snapshots,var/{cache,log}}
 
 #mount /dev/$diskpartboot /mnt/boot/efi
 #mount -o compress=zstd:1,noatime,subvol=@ /dev/$diskpartsys /mnt
