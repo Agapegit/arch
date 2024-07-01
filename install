@@ -71,7 +71,7 @@ mount /dev/$diskhome /mnt
 #mount -o compress=zstd:1,noatime,subvol=@log /dev/$diskpartsys /mnt/var/log
 #mount -o compress=zstd:1,noatime,subvol=@snapshots /dev/$diskpartsys /mnt/.snapshots
 
-sleep 20s
+#sleep 20s
 # ------------------------------------------------------
 # Install base packages
 # ------------------------------------------------------
