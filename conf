@@ -8,13 +8,11 @@ sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 zoneinfo="Europe/Moscow"
 hostname="agapepc"
 
-
 # ------------------------------------------------------
 # Set Root Password
 # ------------------------------------------------------
 echo "Set root password"
 passwd root
-
 # ------------------------------------------------------
 # Set System Time
 # ------------------------------------------------------
@@ -26,8 +24,7 @@ pacman -Syy
 # ------------------------------------------------------
 # Install Packages
 # ------------------------------------------------------
-pacman --noconfirm -S grub efibootmgr
-
+#pacman --noconfirm -S grub efibootmgr
 # ------------------------------------------------------
 # Set hostname and localhost
 # ------------------------------------------------------
@@ -35,7 +32,6 @@ echo "$hostname" >> /etc/hostname
 echo "127.0.0.1 localhost" >> /etc/hosts
 echo "::1       localhost" >> /etc/hosts
 echo "127.0.1.1 $hostname.localdomain $hostname" >> /etc/hosts
-
 # ------------------------------------------------------
 # Grub installation
 # ------------------------------------------------------
