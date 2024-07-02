@@ -10,7 +10,7 @@ lsblk
 #read -p "Enter disk name: " diskname
 diskname=sda
 
-$ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << FDISK_CMDS  | fdisk /dev/sda
+sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << FDISK_CMDS  | fdisk /dev/sda
 g      # create new GPT partition
 n      # add new partition
 1      # partition number
