@@ -8,7 +8,7 @@ sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 
 lsblk
 #read -p "Enter disk name: " diskname
-diskname=/dev/sda
+diskname=sda
 
 cfdisk --zero /dev/$diskname
 
