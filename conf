@@ -38,7 +38,7 @@ pacman -Syy
 # ------------------------------------------------------
 # Install Packages
 # ------------------------------------------------------
-pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober btrfs-progs plasma-desktop pacman-contrib
+pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober btrfs-progs plasma-desktop sddm pacman-contrib
 
 # ------------------------------------------------------
 # set lang utf-8 US, RU
@@ -82,7 +82,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 # ------------------------------------------------------
 # Add btrfs, Nvidia and setfont to mkinitcpio
 # ------------------------------------------------------
-sed -i 's/BINARIES=()/BINARIES=(btrfs setfont)/g' /etc/mkinitcpio.conf
-№sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/g' /etc/mkinitcpio.conf
+#sed -i 's/BINARIES=()/BINARIES=(btrfs setfont)/g' /etc/mkinitcpio.conf
+#sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/g' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 exit
