@@ -14,9 +14,9 @@ cfdisk --zero /dev/$diskname
 
 #Fix read partition!
 
-diskpartboot=/dev/sda1
-diskpartsys=/dev/sda2
-diskhome=/dev/sda3
+diskpartboot=sda1
+diskpartsys=sda2
+diskhome=sda3
 
 
 # ------------------------------------------------------
