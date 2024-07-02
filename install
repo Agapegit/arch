@@ -75,9 +75,9 @@ cat /mnt/etc/fstab
 # ------------------------------------------------------
 # Install configuration scripts
 # ------------------------------------------------------
-mkdir /mnt/archinstall
-cp conf /mnt/arch/
-chmod +x /mnt/archinstall/conf
+mkdir /mnt/arch
+cp arch/conf /mnt/arch/
+chmod +x /mnt/arch/conf
 # ------------------------------------------------------
 # Add group wheel to sudo
 # ------------------------------------------------------
