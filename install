@@ -25,7 +25,7 @@ t      # change partition type
 1      # Linux filesystem
 t      # change partition type
 2      # partition number
-83     # Linux filesystem
+20     # Linux filesystem
 w      # write partition table and exit
 FDISK_CMDS
 
