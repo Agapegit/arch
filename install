@@ -8,15 +8,15 @@ sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 
 lsblk
 #read -p "Enter disk name: " diskname
-diskname = /dev/sda
+diskname=/dev/sda
 
 cfdisk --zero /dev/$diskname
 
 #Fix read partition!
 
-diskpartboot = /dev/sda1
-diskpartsys = /dev/sda2
-diskhome = /dev/sda3
+diskpartboot=/dev/sda1
+diskpartsys=/dev/sda2
+diskhome=/dev/sda3
 
 
 # ------------------------------------------------------
@@ -39,7 +39,7 @@ mkfs.fat -F 32 /dev/$diskpartboot
 mkfs.ext4 /dev/$diskpartsys
 mkfs.ext4 /dev/$diskhome
 
-mkdir -p /mnt/{boot/efi,home,.snapshots,var/{cache,log}}
+mkdir -p /mnt/{boot/efi,home,var/{cache,log}}
 
 mount /dev/$diskpartboot /mnt/boot/efi
 mount /dev/$diskpartsys /mnt
