@@ -5,25 +5,27 @@
 # ------------------------------------------------------
 sed -i s/'#Color'/'Color'/g /etc/pacman.conf
 sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
-#echo "Start reflector..."
-#read -p "Enter your country " country
-#reflector -c "$country," -p https -a 3 --sort rate --save /etc/pacman.d/mirrorlist
-#pacman -Syy
 
 lsblk
-read -p "Enter disk name: " diskname
+#read -p "Enter disk name: " diskname
+diskname = /dev/sda
 
 cfdisk --zero /dev/$diskname
 
 #Fix read partition!
 
+diskpartboot = /dev/sda1
+diskpartsys = /dev/sda2
+diskhome = /dev/sda3
+
+
 # ------------------------------------------------------
 # Enter partition names
 # ------------------------------------------------------
 lsblk
-read -p "Enter the name of the EFI partition (eg. sda1 or nvme0n1p1): " diskpartboot
-read -p "Enter the name of the ROOT partition (eg. sda2 or nvme0n1p2): " diskpartsys
-read -p "Enter the name of the HOME partition (eg. sda3 or nvme0n1p3): " diskhome
+#read -p "Enter the name of the EFI partition (eg. sda1 or nvme0n1p1): " diskpartboot
+#read -p "Enter the name of the ROOT partition (eg. sda2 or nvme0n1p2): " diskpartsys
+#read -p "Enter the name of the HOME partition (eg. sda3 or nvme0n1p3): " diskhome
 
 # ------------------------------------------------------
 # Sync time
@@ -43,33 +45,6 @@ mount /dev/$diskpartboot /mnt/boot/efi
 mount /dev/$diskpartsys /mnt
 mount /dev/$diskhome /mnt
 
-
-# ------------------------------------------------------
-# BTRFS
-# ------------------------------------------------------
-#mkfs.fat -F 32 /dev/$diskpartboot
-#mkfs.btrfs -f /dev/$diskpartsys
-#mkfs.btrfs -f /dev/$diskhome
-
-#umount -R /mnt
-#mount /dev/$diskpartsys /mnt
-#mount /dev/$diskhome /mnt/home
-#btrfs su cr /mnt/@
-#btrfs su cr /mnt/@cache
-#btrfs su cr /mnt/@home
-#btrfs su cr /mnt/@snapshots
-#btrfs su cr /mnt/@log
-
-#mkdir -p /mnt/{boot/efi,home,.snapshots,var/{cache,log}}
-
-#mount /dev/$diskpartboot /mnt/boot/efi
-#mount -o compress=zstd:1,noatime,subvol=@ /dev/$diskpartsys /mnt
-#mount -o compress=zstd:1,noatime,subvol=@cache /dev/$diskpartsys /mnt/var/cache
-#mount -o compress=zstd:1,noatime,subvol=@home /dev/$diskparthome /mnt/home
-#mount -o compress=zstd:1,noatime,subvol=@log /dev/$diskpartsys /mnt/var/log
-#mount -o compress=zstd:1,noatime,subvol=@snapshots /dev/$diskpartsys /mnt/.snapshots
-
-#sleep 20s
 # ------------------------------------------------------
 # Install base packages
 # ------------------------------------------------------
