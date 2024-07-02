@@ -45,14 +45,12 @@ mount /dev/$diskhome /mnt
 
 
 # ------------------------------------------------------
-# Format partitions
+# BTRFS
 # ------------------------------------------------------
 #mkfs.fat -F 32 /dev/$diskpartboot
 #mkfs.btrfs -f /dev/$diskpartsys
 #mkfs.btrfs -f /dev/$diskhome
-# ------------------------------------------------------
-# Mount points for btrfs
-# ------------------------------------------------------
+
 #umount -R /mnt
 #mount /dev/$diskpartsys /mnt
 #mount /dev/$diskhome /mnt/home
