@@ -10,13 +10,33 @@ lsblk
 #read -p "Enter disk name: " diskname
 diskname=sda
 
-cfdisk --zero /dev/$diskname
+$ sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << FDISK_CMDS  | fdisk /dev/sda
+g      # create new GPT partition
+n      # add new partition
+1      # partition number
+       # default - first sector 
++512MiB # partition size
+n      # add new partition
+2      # partition number
+       # default - first sector 
+       # default - last sector 
+t      # change partition type
+1      # partition number
+83     # Linux filesystem
+t      # change partition type
+2      # partition number
+83     # Linux filesystem
+w      # write partition table and exit
+FDISK_CMDS
+
+
+#cfdisk --zero /dev/$diskname
 
 #Fix read partition!
 
 diskpartboot=sda1
 diskpartsys=sda2
-diskhome=sda3
+#diskhome=sda3
 
 
 # ------------------------------------------------------
@@ -37,18 +57,18 @@ timedatectl set-ntp true
 # ------------------------------------------------------
 mkfs.fat -F 32 /dev/$diskpartboot
 mkfs.ext4 /dev/$diskpartsys
-mkfs.ext4 /dev/$diskhome
+#mkfs.ext4 /dev/$diskhome
 
 mkdir -p /mnt/{boot/efi,home,var/{cache,log}}
 
 mount /dev/$diskpartboot /mnt/boot/efi
 mount /dev/$diskpartsys /mnt
-mount /dev/$diskhome /mnt
+#mount /dev/$diskhome /mnt
 
 # ------------------------------------------------------
 # Install base packages
 # ------------------------------------------------------
-pacstrap -K /mnt base base-devel linux linux-firmware linux-headers
+pacstrap -K /mnt base base-devel linux linux-firmware linux-headers grub efibootmgr
 # ------------------------------------------------------
 # Generate fstab
 # ------------------------------------------------------
