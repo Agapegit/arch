@@ -6,6 +6,27 @@
 sed -i s/'#Color'/'Color'/g /etc/pacman.conf
 sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 # ------------------------------------------------------
+# fdisk partition
+# ------------------------------------------------------
+$sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << FDISK_CMDS  | fdisk /dev/$diskname
+g      # create new GPT partition
+n      # add new partition
+1      # partition number
+       # default - first sector 
++512MiB # partition size
+n      # add new partition
+2      # partition number
+       # default - first sector 
+       # default - last sector 
+t      # change partition type
+1      # partition number
+1      # Linux filesystem
+t      # change partition type
+2      # partition number
+20     # Linux filesystem
+w      # write partition table and exit
+FDISK_CMDS
+# ------------------------------------------------------
 # Enter partition names
 # ------------------------------------------------------
 lsblk
