@@ -3,11 +3,11 @@
 sed -i s/'#Color'/'Color'/g /etc/pacman.conf
 sed -i s/'#ParallelDownloads = 5'/'ParallelDownloads = 20'/g /etc/pacman.conf
 
-read -p "Enter username: " username
-read -p "Enter pc name: " hostname
+#read -p "Enter username: " username
+#read -p "Enter pc name: " hostname
 zoneinfo="Europe/Moscow"
-#hostname="agapepc"
-#username="agape"
+hostname="agapepc"
+
 
 # ------------------------------------------------------
 # Set Root Password
@@ -16,43 +16,17 @@ echo "Set root password"
 passwd root
 
 # ------------------------------------------------------
-# Add User
-# ------------------------------------------------------
-echo "Add user $username"
-useradd -m -G wheel $username
-passwd $username
-
-# ------------------------------------------------------
 # Set System Time
 # ------------------------------------------------------
 ln -sf /usr/share/zoneinfo/$zoneinfo /etc/localtime
 hwclock --systohc
 
-# ------------------------------------------------------
-# Update reflector and synchronize mirrors
-# ------------------------------------------------------
-echo "Start reflector..."
-reflector -c "Germany," -p https -a 3 --sort rate --save /etc/pacman.d/mirrorlist
 pacman -Syy
 
 # ------------------------------------------------------
 # Install Packages
 # ------------------------------------------------------
-pacman --noconfirm -S intel-ucode grub grub-btrfs efibootmgr os-prober btrfs-progs plasma-desktop sddm pacman-contrib
-
-# ------------------------------------------------------
-# set lang utf-8 US, RU
-# ------------------------------------------------------
-echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-echo "ru_RU.UTF-8 UTF-8" >> /etc/locale.gen
-locale-gen
-echo "LANG=ru_RU.UTF-8" >> /etc/locale.conf
-
-# ------------------------------------------------------
-# Set Keyboard
-# ------------------------------------------------------
-echo "FONT=cyr-sun16" >> /etc/vconsole.conf
-echo "KEYMAP=cyr-sun16" >> /etc/vconsole.conf
+pacman --noconfirm -S grub efibootmgr
 
 # ------------------------------------------------------
 # Set hostname and localhost
@@ -63,26 +37,9 @@ echo "::1       localhost" >> /etc/hosts
 echo "127.0.1.1 $hostname.localdomain $hostname" >> /etc/hosts
 
 # ------------------------------------------------------
-# Enable Services
-# ------------------------------------------------------
-#systemctl enable NetworkManager
-#systemctl enable bluetooth
-#systemctl enable reflector.timer
-systemctl enable fstrim.timer
-#systemctl enable firewalld
-#systemctl enable acpid
-systemctl enable sddm.service
-
-# ------------------------------------------------------
 # Grub installation
 # ------------------------------------------------------
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --removable
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# ------------------------------------------------------
-# Add btrfs, Nvidia and setfont to mkinitcpio
-# ------------------------------------------------------
-#sed -i 's/BINARIES=()/BINARIES=(btrfs setfont)/g' /etc/mkinitcpio.conf
-#sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/g' /etc/mkinitcpio.conf
-mkinitcpio -p linux
 exit
