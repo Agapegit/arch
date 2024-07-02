@@ -22,7 +22,7 @@ n      # add new partition
        # default - last sector 
 t      # change partition type
 1      # partition number
-83     # Linux filesystem
+1      # Linux filesystem
 t      # change partition type
 2      # partition number
 83     # Linux filesystem
