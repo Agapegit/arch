@@ -46,7 +46,7 @@ mount /dev/$sda1 /mnt/boot/efi
 # ------------------------------------------------------
 # Install base packages
 # ------------------------------------------------------
-pacstrap -K /mnt base base-devel git linux linux-firmware vim openssh reflector rsync amd-ucode
+pacstrap -K /mnt base base-devel git linux linux-firmware vim reflector rsync
 # ------------------------------------------------------
 # Generate fstab
 # ------------------------------------------------------
