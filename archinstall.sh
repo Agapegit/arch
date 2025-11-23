@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Arch Linux 2025 • УЛЬТРА-НАДЁЖНАЯ установка (Btrfs/ZFS/LUKS-proof)
-# Автоопределение размера диска • fdisk • 100% работает везде
+# Arch Linux 2025 • 100% ИНТЕРАКТИВНАЯ установка с выбором размеров
+# → Вводите размер Root или Enter → авто (50–300 ГБ)
+# → Полностью безопасно, Btrfs/LUKS-proof, fdisk, VirtualBox-совместимо
 # =============================================================================
 
 set -euo pipefail
@@ -27,7 +28,7 @@ ping -c 1 8.8.8.8 &>/dev/null || { warn "Нет интернета!"; exit 1; }
 timedatectl set-ntp true
 
 # =============================================================================
-# 1. Выбор диска (только имя)
+# 1. Выбор диска
 # =============================================================================
 clear
 echo -e "${Y}╔══════════════════════════════════════╗${N}"
@@ -37,7 +38,7 @@ lsblk -dpo NAME,SIZE,MODEL | grep -v loop
 echo -e "${R}ДИСК БУДЕТ ПОЛНОСТЬЮ УНИЧТОЖЕН!${N}"
 
 while true; do
-    read -p "$(echo -e "${Y}Введите имя диска (sda / nvme0n1 / vda): ${N}")" SHORT
+    read -p "$(echo -e "${Y}Имя диска (sda / nvme0n1 / vda): ${N}")" SHORT
     SHORT=$(echo "$SHORT" | xargs)
     DISK="/dev/$SHORT"
     [[ -b "$DISK" ]] || { error "Диск $DISK не найден!"; continue; }
@@ -55,52 +56,58 @@ read -s -p "Пароль root: " ROOTPASS; echo
 [[ ${#USERPASS} -lt 4 || ${#ROOTPASS} -lt 4 ]] && error "Пароли слишком короткие!"
 
 # =============================================================================
-# 3. ПОЛНАЯ ОЧИСТКА ДИСКА ОТ BTRFS/ZFS/LUKS/RAID И ЛЮБОЙ ДРУГОЙ ФС
+# 3. Определяем размер диска и предлагаем Root
 # =============================================================================
-pause "ПОЛНАЯ ОЧИСТКА ДИСКА $DISK (Btrfs/ZFS/LUKS-proof)"
-log "Уничтожаем все подписи и метаданные (даже Btrfs subvolumes и LUKS заголовки)..."
+pause "ВЫБОР РАЗМЕРА РАЗДЕЛА ROOT"
+TOTAL_GB=$(( $(blockdev --getsz "$DISK") * 512 / 1024 / 1024 / 1024 ))
 
-# 1. Затираем начало и конец диска
+echo -e "${Y}Размер диска: ${TOTAL_GB} ГБ${N}"
+echo "Рекомендуется:"
+if (( TOTAL_GB < 150 )); then
+    DEFAULT_ROOT="+50G"
+    echo " → Root: 50 ГБ (для маленьких дисков)"
+elif (( TOTAL_GB < 600 )); then
+    DEFAULT_ROOT="+100G"
+    echo " → Root: 100 ГБ (оптимально)"
+elif (( TOTAL_GB < 1500 )); then
+    DEFAULT_ROOT="+200G"
+    echo " → Root: 200 ГБ (для больших дисков)"
+else
+    DEFAULT_ROOT="+300G"
+    echo " → Root: 300 ГБ (для очень больших дисков)"
+fi
+
+echo
+read -p "$(echo -e "${Y}Введите размер Root (например 150G) или Enter → $DEFAULT_ROOT: ${N}")" INPUT_ROOT
+ROOT_SIZE="${INPUT_ROOT:-$DEFAULT_ROOT}"
+
+# Проверка корректности ввода
+if [[ -n "$INPUT_ROOT" ]]; then
+    if ! [[ "$ROOT_SIZE" =~ ^\+[0-9]+[GMK]$ ]]; then
+        error "Неверный формат! Пример: 120G или +150G"
+    fi
+fi
+
+log "Будет создано: EFI 1G | Root $ROOT_SIZE | Home — остальное"
+
+# =============================================================================
+# 4. Полная очистка (Btrfs/LUKS/ZFS-proof)
+# =============================================================================
+pause "ПОЛНАЯ ОЧИСТКА ДИСКА $DISK"
 dd if=/dev/zero of="$DISK" bs=1M count=100 status=none 2>/dev/null || true
 dd if=/dev/zero of="$DISK" bs=1M seek=$(( $(blockdev --getsz "$DISK") * 512 / 1024 / 1024 - 100 )) count=100 status=none 2>/dev/null || true
-
-# 2. Убиваем все известные сигнатуры
 wipefs -af "$DISK" &>/dev/null || true
 sgdisk --zap-all "$DISK" &>/dev/null || true
-
-# 3. Принудительно сбрасываем кэш
-blockdev --flushbufs "$DISK"
 sync
 
 # =============================================================================
-# 4. АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ РАЗМЕРА И УМНАЯ РАЗМЕТКА
+# 5. Разметка через fdisk с вашим размером Root
 # =============================================================================
-pause "УМНАЯ РАЗМЕТКА ПО РАЗМЕРУ ДИСКА"
-
-TOTAL_SECTORS=$(blockdev --getsz "$DISK")
-TOTAL_GB=$(( TOTAL_SECTORS * 512 / 1024 / 1024 / 1024 ))
-
-log "Размер диска: ${TOTAL_GB} ГБ — делаем умную разметку"
-
-# Логика:
-# EFI — всегда 1 ГБ
-# Root — минимум 50 ГБ, максимум 300 ГБ
-# Home — всё остальное
-
-ROOT_SIZE="+100G"   # по умолчанию 100 ГБ
-if (( TOTAL_GB < 200 )); then
-    ROOT_SIZE="+50G"
-elif (( TOTAL_GB > 800 )); then
-    ROOT_SIZE="+300G"
-fi
-
-log "Разметка: EFI 1G | Root $ROOT_SIZE | Home — остальное"
-
-# fdisk — 100% надёжно
+pause "РАЗМЕТКА ДИСКА"
 {
-    echo g                # новая GPT-таблица
+    echo g                # новая GPT
     echo n; echo 1; echo; echo +1G;   echo t; echo 1; echo ef
-    echo n; echo 2; echo; echo $ROOT_SIZE; echo t; echo 2; echo 83
+    echo n; echo 2; echo; echo "$ROOT_SIZE"; echo t; echo 2; echo 83
     echo n; echo 3; echo; echo;       echo t; echo 3; echo 83
     echo w
 } | fdisk "$DISK" > /dev/null
@@ -122,7 +129,7 @@ log "Разделы созданы:"
 lsblk -f "$DISK"
 
 # =============================================================================
-# 5–8. Форматирование → pacstrap → chroot → готово
+# 6–9. Форматирование → pacstrap → chroot → готово
 # =============================================================================
 pause "ФОРМАТИРОВАНИЕ"
 mkfs.fat -F32 "$EFI_PART"
@@ -146,7 +153,7 @@ pause "ФИНАЛЬНАЯ НАСТРОЙКА"
 cat > /mnt/root/chroot-setup.sh <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-export USERPASS ROOTPASS  # берём из окружения
+export USERPASS ROOTPASS
 
 ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime; hwclock --systohc
 sed -i 's/#en_US.UTF-8/en_US.UTF-8/; s/#ru_RU.UTF-8/ru_RU.UTF-8/' /etc/locale.gen
@@ -166,8 +173,7 @@ echo "root:$ROOTPASS" | chpasswd
 sed -i '/%wheel ALL=(ALL:ALL) ALL/s/^#//' /etc/sudoers
 
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck
-mkdir -p /boot/EFI/BOOT
-cp /boot/grub/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI 2>/dev/null || true
+mkdir -p /boot/EFI/BOOT; cp /boot/grub/grubx64.efi /boot/EFI/BOOT/BOOTX64.EFI 2>/dev/null || true
 
 git clone --depth=1 https://github.com/vinceliuice/grub2-themes.git /tmp/t 2>/dev/null && \
     cp -r /tmp/t/themes/Vimix /boot/grub/themes/ 2>/dev/null || true
@@ -194,7 +200,7 @@ chmod +x /mnt/root/chroot-setup.sh
 arch-chroot /mnt /root/chroot-setup.sh
 rm -f /mnt/root/chroot-setup.sh
 
-pause "ГОТОВО!"
+pause "УСТАНОВКА ЗАВЕРШЕНА!"
 log "Перезагрузка через 30 сек..."
 sleep 30
 umount -R /mnt
