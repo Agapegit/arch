@@ -13,7 +13,7 @@ mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
 pacstrap /mnt base base-devel linux linux-firmware
 genfstab -U /mnt >> /mnt/fstab
-arch-chroot /mnt /bin/bash <<EOF >/dev/null 2>&1
+arch-chroot /mnt /bin/bash <<EOF
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 hwclock --systohc
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
